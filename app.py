@@ -9,7 +9,6 @@ from utils.prompt_maker import STANDALONE_QUESTION_PROMPT
 
 # Load environment variables (API keys, etc.)
 load_dotenv()
-
 # Initialize Flask app
 app = Flask(__name__)
 
@@ -19,10 +18,10 @@ api_key = os.getenv('OPENAI_API_KEY')
 # os.getenv('LANGSMITH_TRACING_V2')
 
 # Create FAISS index if it doesn't exist (called when the app starts)
-create_faiss_index(api_key)
+create_faiss_index()
 
 # Load the FAISS index (knowledge base) for document retrieval
-faiss_index = load_knowledge_base(api_key)
+faiss_index = load_knowledge_base()
 
 # Initialize OpenAI LLM (GPT-3.5 Turbo)
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, api_key=api_key)

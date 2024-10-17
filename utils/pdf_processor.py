@@ -8,6 +8,12 @@ from langchain_openai import OpenAIEmbeddings
 DB_FAISS_PATH = 'embeddings'
 DOCUMENTS_DIR = 'documents'
 
+
+# Verificar si el directorio donde se almacenará el FAISS index existe
+# if not os.path.exists(DB_FAISS_PATH):
+#     os.makedirs(DB_FAISS_PATH)
+
+
 # Ensure the necessary directories exist
 if not os.path.exists(DOCUMENTS_DIR):
     os.makedirs(DOCUMENTS_DIR)
@@ -32,7 +38,7 @@ def chunk_text(texts):
     return chunks
 
 # Step 3: Create and save FAISS index with embeddings
-def create_faiss_index(api_key):
+def create_faiss_index():
     if os.path.exists(DB_FAISS_PATH):  # Check if the FAISS index already exists
         print("FAISS index already exists. Skipping embedding process.")
         return
@@ -50,7 +56,7 @@ def create_faiss_index(api_key):
     chunks = chunk_text(documents)
 
     # Create OpenAI embeddings
-    embeddings = OpenAIEmbeddings(api_key=api_key, model = 'text-embedding-3-small')
+    embeddings = OpenAIEmbeddings(model = 'text-embedding-3-small')
 
     # Create a FAISS vector store and embed the chunks
     faiss_index = FAISS.from_documents(chunks, embeddings)
@@ -60,13 +66,13 @@ def create_faiss_index(api_key):
     print("FAISS index created and saved to:", DB_FAISS_PATH)
 
 # Step 4: Load FAISS index for retrieval
-def load_knowledge_base(api_key):
+def load_knowledge_base():
     # Ensure FAISS index exists before loading
     if not os.path.exists(DB_FAISS_PATH):
         raise FileNotFoundError(f"No FAISS index found at {DB_FAISS_PATH}. Run the FAISS index creation process first.")
 
     print("Loading OpenAI Embeddings...")
-    embeddings = OpenAIEmbeddings(api_key=api_key)
+    embeddings = OpenAIEmbeddings()
 
     try:
         print("Loading FAISS index...")
@@ -89,13 +95,12 @@ def format_docs(docs):
 
 if __name__ == '__main__':
     # Replace with your OpenAI API key
-    api_key = 'your-openai-api-key'
 
     # Step to create and save FAISS index (run only once)
-    create_faiss_index(api_key)
+    create_faiss_index()
 
     # Once the FAISS index is created, you can load it and retrieve documents
-    db = load_knowledge_base(api_key)
+    db = load_knowledge_base()
 
     # Example query
     query = "What is the main topic of the document?"
