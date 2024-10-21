@@ -1,4 +1,4 @@
 .env
 chat_memory
 embeddings
-documents/*pdf
+documents/*
